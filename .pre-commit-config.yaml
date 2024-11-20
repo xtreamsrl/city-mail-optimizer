@@ -10,7 +10,7 @@ repos:
   rev: v0.7.2
   hooks:
     - id: ruff
-      exclude: notebooks/*
+      exclude: notebooks/*  # TODO: this raises a warning, apparently this field is treated as a regex and not a path
     - id: ruff-format
 - repo: https://github.com/kynan/nbstripout
   rev: 0.8.0

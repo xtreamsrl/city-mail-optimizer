@@ -29,7 +29,7 @@ class PathOptimizerApplication(PathOptimizerPort):
         logging.info(f"Calculating the shortest path using TSP for delivery nodes {delivery_nodes}")
         best_route = traveling_salesman_problem(
             self.streets_graph_adapter.city_graph,
-            nodes=delivery_nodes, 
+            nodes=delivery_nodes,
             weight="travel_time",
             cycle=True,
             method=nx.approximation.simulated_annealing_tsp,

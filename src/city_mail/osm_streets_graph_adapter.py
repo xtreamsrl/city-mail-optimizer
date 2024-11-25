@@ -44,21 +44,27 @@ class OsmStreetsGraphAdapter(StreetsGraphPort):
             city_graph = ox.graph_from_place(
                 query=self.city_name,
                 network_type="drive",
+                retain_all=False,
+                truncate_by_edge=True,
             )
             city_graph = ox.truncate.largest_component(city_graph, strongly=True)
 
             ox.io.save_graphml(city_graph, filepath=self._file_path)
             logging.info(f"City graph of {self.city_name} downloaded")
         else:
-            logging.info(f"Loading city graph of {self.city_name} from {self._file_path}")
+            logging.info(
+                f"Loading city graph of {self.city_name} from {self._file_path}"
+            )
             city_graph = ox.io.load_graphml(filepath=self._file_path)
 
-        assert nx.is_strongly_connected(city_graph) == True
+        assert nx.is_strongly_connected(city_graph)
 
         return city_graph
 
     def closest_node_id_from_address(self, address: AddressData) -> int:
-        return ox.distance.nearest_nodes(self.city_graph, address.longitude, address.latitude)
+        return ox.distance.nearest_nodes(
+            self.city_graph, address.longitude, address.latitude
+        )
 
     def _build_file_path_from_city_name(self, city_name: str) -> str:
         return f"graphs_data/{self._urlify(city_name)}.graphml"
@@ -66,9 +72,9 @@ class OsmStreetsGraphAdapter(StreetsGraphPort):
     @staticmethod
     def _urlify(s):
         # Remove all non-word characters (everything except numbers and letters)
-        s = re.sub(r"[^\w\s]", '', s)
+        s = re.sub(r"[^\w\s]", "", s)
 
         # Replace all runs of whitespace with a single dash
-        s = re.sub(r"\s+", '-', s)
+        s = re.sub(r"\s+", "-", s)
 
         return s

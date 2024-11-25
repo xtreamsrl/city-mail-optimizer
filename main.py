@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 
 if __name__ == "__main__":
-    city_name = "Varese, Italy"
+    city_name = "Varese, Varese, Italy"
 
     osm_street_graph = OsmStreetsGraphAdapter(city_name)
     path_optimizer = PathOptimizerApplication(
@@ -48,4 +48,7 @@ if __name__ == "__main__":
             100 if n == starting_node else 50 if n in delivery_nodes else 20
             for n in osm_street_graph.city_graph.nodes()
         ],
+        save=True,
+        filepath=f"{city_name}.png",
+        dpi=3000,
     )

@@ -19,11 +19,15 @@ if __name__ == "__main__":
         address_data_adapter=NominatimAddressesDataAdapter(),
     )
 
-    addresses = ["Piazzale Trento, Varese, Italy",
-                "Piazza Monte Grappa, Varese, Italy",
-                "Via Fratelli de Grandi 5, Varese, Italy"]
+    addresses = [
+        "Piazzale Trento, Varese, Italy",
+        "Piazza Monte Grappa, Varese, Italy",
+        "Via Fratelli de Grandi 5, Varese, Italy",
+    ]
 
-    best_route, delivery_nodes, starting_node = path_optimizer.calculate_shortest_path(addresses)
+    best_route, delivery_nodes, starting_node = path_optimizer.calculate_shortest_path(
+        addresses
+    )
 
     ox.plot.plot_graph_route(
         osm_street_graph.city_graph,
@@ -36,13 +40,12 @@ if __name__ == "__main__":
             "blue" if n == starting_node else "red" if n in delivery_nodes else "white"
             for n in osm_street_graph.city_graph.nodes()
         ],
-        node_alpha=[1 if n in delivery_nodes else 0.5 for n in osm_street_graph.city_graph.nodes()],
+        node_alpha=[
+            1 if n in delivery_nodes else 0.5
+            for n in osm_street_graph.city_graph.nodes()
+        ],
         node_size=[
             100 if n == starting_node else 50 if n in delivery_nodes else 20
             for n in osm_street_graph.city_graph.nodes()
         ],
     )
-
-
-
-

@@ -9,5 +9,6 @@ dependencies = [
     "jupyterlab>=4.2.5",
     "matplotlib>=3.9.2",
     "osmnx>=1.9.4",
+    "pydantic>=2.10.1",
     "scikit-learn>=1.5.1",
 ]

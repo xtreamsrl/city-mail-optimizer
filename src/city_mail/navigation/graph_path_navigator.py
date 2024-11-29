@@ -1,0 +1,50 @@
+from typing import Generator
+
+import networkx as nx
+from pydantic import BaseModel
+
+
+class NavigationStreet(BaseModel):
+    name: str
+    length: float
+    starting_node_id: int
+    ending_node_id: int
+    all_nodes_id: list[int]
+
+class GraphPathNavigator:
+    def __init__(self, graph: nx.Graph):
+        self._graph = graph
+
+    def navigate(self, path: list[int]) -> Generator[NavigationStreet, None, None]:
+        current_name = None
+        current_length = 0.0
+        starting_node_id = path[0]
+        all_nodes_id = [path[0]]
+
+        for i in range(len(path) - 1):
+            edge_data = self._graph.get_edge_data(path[i], path[i + 1])[0]
+            edge_name = edge_data["name"]
+            edge_length = edge_data["length"]
+
+            # TODO: some edge contains multiple street names, understand better why this case happen in the graph edges
+            if isinstance(edge_name, list):
+                edge_name = edge_name[0]
+
+            if current_name is None:
+                current_name = edge_name
+
+            if edge_name == current_name:
+                current_length += edge_length
+                all_nodes_id.append(path[i])
+            else:
+                yield NavigationStreet(
+                    name=current_name,
+                    length=current_length,
+                    starting_node_id=starting_node_id,
+                    ending_node_id=path[i+1],
+                    all_nodes_id=all_nodes_id
+                )
+                current_name = edge_name
+                current_length = edge_length
+                starting_node_id = path[i+1]
+                all_nodes_id = [path[i+1]]

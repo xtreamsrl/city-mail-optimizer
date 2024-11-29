@@ -3,6 +3,7 @@ import logging
 import networkx as nx
 
 from src.city_mail.addresses_data_adapter import NominatimAddressesDataAdapter
+from src.city_mail.navigation.graph_path_navigator import GraphPathNavigator
 from src.city_mail.osm_streets_graph_adapter import OsmStreetsGraphAdapter
 from src.city_mail.path_optimizer_service import PathOptimizerApplication
 from src.city_mail.visualization_utils import save_shortest_delivery_path_map
@@ -12,13 +13,12 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)8.8s] %(message)s",
 )
 
-def print_edges_between_nodes(graph: nx.Graph, nodes: list[int], delivery_nodes: dict[int, str]) -> None:
-    # TODO: group same street in a single one
-    for i in range(len(nodes)-1):
-        edge_data = graph.get_edge_data(nodes[i], nodes[i+1])[0]
-        if nodes[i] in delivery_nodes.keys():
-            print(f"Deliver to {delivery_nodes[nodes[i]]}")
-        print(f"Follow {edge_data['name']} for {edge_data['length']:.2f} meters")
+def print_edges_between_nodes(navigator: GraphPathNavigator, best_nodes: list[int], delivery_nodes: dict[int, str]) -> None:
+    for street in navigator.navigate(best_nodes):
+
+        if street.starting_node_id in delivery_nodes:
+            print(f"Deliver to {street.name}")
+        print(f"Follow {street.name} for {street.length:.2f} meters")
 
 if __name__ == "__main__":
     # TODO: add command line parameters
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         addresses
     )
 
-    print_edges_between_nodes(osm_street_graph.city_graph, best_route, delivery_nodes)
+    print_edges_between_nodes(GraphPathNavigator(osm_street_graph.city_graph), best_route, delivery_nodes)
 
     save_shortest_delivery_path_map(osm_street_graph.city_graph,
                                     best_route,

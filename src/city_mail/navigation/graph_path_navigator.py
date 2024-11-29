@@ -9,7 +9,6 @@ class NavigationStreet(BaseModel):
     length: float
     starting_node_id: int
     ending_node_id: int
-    all_nodes_id: list[int]
 
 class GraphPathNavigator:
     def __init__(self, graph: nx.Graph):
@@ -19,7 +18,6 @@ class GraphPathNavigator:
         current_name = None
         current_length = 0.0
         starting_node_id = path[0]
-        all_nodes_id = [path[0]]
 
         for i in range(len(path) - 1):
             edge_data = self._graph.get_edge_data(path[i], path[i + 1])[0]
@@ -35,16 +33,20 @@ class GraphPathNavigator:
 
             if edge_name == current_name:
                 current_length += edge_length
-                all_nodes_id.append(path[i])
             else:
                 yield NavigationStreet(
                     name=current_name,
                     length=current_length,
                     starting_node_id=starting_node_id,
-                    ending_node_id=path[i+1],
-                    all_nodes_id=all_nodes_id
+                    ending_node_id=path[i]
                 )
                 current_name = edge_name
-                current_length = edge_length
+                current_length = 0
                 starting_node_id = path[i+1]
-                all_nodes_id = [path[i+1]]
+
+        yield NavigationStreet(
+            name=current_name,
+            length=current_length,
+            starting_node_id=starting_node_id,
+            ending_node_id=path[-1]
+        )

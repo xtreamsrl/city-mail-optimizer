@@ -16,9 +16,10 @@ logging.basicConfig(
 def print_edges_between_nodes(navigator: GraphPathNavigator, best_nodes: list[int], delivery_nodes: dict[int, str]) -> None:
     for street in navigator.navigate(best_nodes):
 
-        if street.starting_node_id in delivery_nodes:
-            print(f"Deliver to {street.name}")
-        print(f"Follow {street.name} for {street.length:.2f} meters")
+        if street.starting_node_id in delivery_nodes.keys():
+            print(f"Deliver to {delivery_nodes[street.starting_node_id]}")
+        else:
+            print(f"Follow {street.name} for {street.length:.2f} meters")
 
 if __name__ == "__main__":
     # TODO: add command line parameters

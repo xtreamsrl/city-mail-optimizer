@@ -9,7 +9,7 @@ from src.city_mail.osm_streets_graph_adapter import StreetsGraphPort
 
 
 class PathOptimizerPort(Protocol):
-    def calculate_shortest_path(self, addresses: list[str]) -> tuple[list[int], list[int], int]:
+    def calculate_shortest_path(self, addresses: list[str]) -> tuple[list[int], dict[int, str], int]:
         ...
 
 
@@ -20,10 +20,14 @@ class PathOptimizerApplication(PathOptimizerPort):
         self.streets_graph_adapter = streets_graph_adapter
         self.address_data_adapter = address_data_adapter
 
-    def calculate_shortest_path(self, addresses: list[str]) -> tuple[list[int], list[int], int]:
+    def calculate_shortest_path(self, addresses: list[str]) -> tuple[list[int], dict[int, str], int]:
+        # TODO: too much responsibility?
         delivery_addresses_data = self.address_data_adapter.get_multiple_addresses_data(addresses)
         delivery_nodes = [self.streets_graph_adapter.closest_node_id_from_address(address_data)
                           for address_data in delivery_addresses_data]
+
+        delivery_nodes_map = dict(zip(delivery_nodes, addresses))
+
         starting_node = delivery_nodes[0]
 
         logging.info(f"Calculating the shortest path using TSP for delivery nodes {delivery_nodes}")
@@ -40,7 +44,7 @@ class PathOptimizerApplication(PathOptimizerPort):
         logging.info(f"Reordering best route")
         best_route = self._reorder_route(best_route, starting_node)
         
-        return best_route, delivery_nodes, starting_node
+        return best_route, delivery_nodes_map, starting_node
 
     def _reorder_route(self, route: list[int], starting_node: int) -> list[int]:
         return (

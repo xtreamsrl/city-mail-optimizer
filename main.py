@@ -1,16 +1,28 @@
 import logging
 
-import osmnx as ox
+import networkx as nx
+
 from src.city_mail.addresses_data_adapter import NominatimAddressesDataAdapter
+from src.city_mail.navigation.graph_path_navigator import GraphPathNavigator
 from src.city_mail.osm_streets_graph_adapter import OsmStreetsGraphAdapter
 from src.city_mail.path_optimizer_service import PathOptimizerApplication
+from src.city_mail.visualization_utils import save_shortest_delivery_path_map
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)8.8s] %(message)s",
 )
 
+def print_edges_between_nodes(navigator: GraphPathNavigator, best_nodes: list[int], delivery_nodes: dict[int, str]) -> None:
+    for street in navigator.navigate(best_nodes):
+
+        if street.starting_node_id in delivery_nodes.keys():
+            print(f"Deliver to {delivery_nodes[street.starting_node_id]}")
+        else:
+            print(f"Follow {street.name} for {street.length:.2f} meters")
+
 if __name__ == "__main__":
+    # TODO: add command line parameters
     city_name = "Varese, Varese, Italy"
 
     osm_street_graph = OsmStreetsGraphAdapter(city_name)
@@ -29,26 +41,9 @@ if __name__ == "__main__":
         addresses
     )
 
-    ox.plot.plot_graph_route(
-        osm_street_graph.city_graph,
-        best_route,
-        route_color="green",
-        route_linewidth=4,
-        route_alpha=0.5,
-        orig_dest_size=4,
-        node_color=[
-            "blue" if n == starting_node else "red" if n in delivery_nodes else "white"
-            for n in osm_street_graph.city_graph.nodes()
-        ],
-        node_alpha=[
-            1 if n in delivery_nodes else 0.5
-            for n in osm_street_graph.city_graph.nodes()
-        ],
-        node_size=[
-            100 if n == starting_node else 50 if n in delivery_nodes else 20
-            for n in osm_street_graph.city_graph.nodes()
-        ],
-        save=True,
-        filepath=f"{city_name}.png",
-        dpi=3000,
-    )
+    print_edges_between_nodes(GraphPathNavigator(osm_street_graph.city_graph), best_route, delivery_nodes)
+
+    save_shortest_delivery_path_map(osm_street_graph.city_graph,
+                                    best_route,
+                                    starting_node,
+                                    delivery_nodes.keys(), f"shortest_delivery_maps/{city_name}.png")

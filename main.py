@@ -1,17 +1,15 @@
-import logging
 from typing import Annotated
-from rich import print
 
-import networkx as nx
 import typer
+from rich import print
 
 from src.city_mail.addresses_data_adapter import NominatimAddressesDataAdapter
 from src.city_mail.file_path_utils import urlify
-
 from src.city_mail.navigation.graph_path_navigator import GraphPathNavigator
 from src.city_mail.osm_streets_graph_adapter import OsmStreetsGraphAdapter
 from src.city_mail.path_optimizer_service import PathOptimizerApplication
 from src.city_mail.visualization_utils import save_shortest_delivery_path_map
+
 
 def display_navigation(navigator: GraphPathNavigator, best_nodes: list[int], delivery_nodes: dict[int, str]) -> None:
     for street in navigator.navigate(best_nodes):

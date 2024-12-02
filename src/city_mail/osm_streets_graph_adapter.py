@@ -1,6 +1,5 @@
 import logging
 import os
-import re
 
 import networkx as nx
 import osmnx as ox

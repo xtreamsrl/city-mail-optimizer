@@ -30,4 +30,5 @@ def save_shortest_delivery_path_map(graph: nx.Graph,
         save=True,
         filepath=saving_filepath,
         dpi=3000,
+        show=False
     )

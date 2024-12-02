@@ -6,6 +6,7 @@ import networkx as nx
 import osmnx as ox
 
 from src.city_mail.addresses_data_adapter import AddressData
+from src.city_mail.file_path_utils import urlify
 
 
 class StreetsGraphPort:
@@ -67,14 +68,4 @@ class OsmStreetsGraphAdapter(StreetsGraphPort):
         )
 
     def _build_file_path_from_city_name(self, city_name: str) -> str:
-        return f"graphs_data/{self._urlify(city_name)}.graphml"
-
-    @staticmethod
-    def _urlify(s):
-        # Remove all non-word characters (everything except numbers and letters)
-        s = re.sub(r"[^\w\s]", "", s)
-
-        # Replace all runs of whitespace with a single dash
-        s = re.sub(r"\s+", "-", s)
-
-        return s
+        return f"graphs_data/{urlify(city_name)}.graphml"

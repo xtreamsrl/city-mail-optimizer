@@ -164,6 +164,8 @@ cython_debug/
 .idea
 **/*.graphml
 cache/
+graphs_data/
 shortest_delivery_maps/
+addresses_files/
 **/*.png
 .DS_Store

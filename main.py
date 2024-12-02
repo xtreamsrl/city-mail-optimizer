@@ -7,11 +7,11 @@ import typer
 
 from src.city_mail.addresses_data_adapter import NominatimAddressesDataAdapter
 from src.city_mail.file_path_utils import urlify
+
 from src.city_mail.navigation.graph_path_navigator import GraphPathNavigator
 from src.city_mail.osm_streets_graph_adapter import OsmStreetsGraphAdapter
 from src.city_mail.path_optimizer_service import PathOptimizerApplication
 from src.city_mail.visualization_utils import save_shortest_delivery_path_map
-
 
 def display_navigation(navigator: GraphPathNavigator, best_nodes: list[int], delivery_nodes: dict[int, str]) -> None:
     for street in navigator.navigate(best_nodes):
@@ -19,7 +19,6 @@ def display_navigation(navigator: GraphPathNavigator, best_nodes: list[int], del
             print(f":package: [green]Deliver to[/green] [italic]{delivery_nodes[street.starting_node_id]}[/italic]")
         else:
             print(f":right_arrow: Follow {street.name} for {street.length:.0f} meters")
-
 
 def main(city: str,
          addresses_file_path: Annotated[str, typer.Option(

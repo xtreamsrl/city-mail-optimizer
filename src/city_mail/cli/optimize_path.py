@@ -3,13 +3,15 @@ from typing import Annotated
 import typer
 from rich import print
 
-from src.city_mail.addresses_data_adapter import NominatimAddressesDataAdapter
-from src.city_mail.file_path_utils import urlify
-from src.city_mail.navigation.graph_path_navigator import GraphPathNavigator
-from src.city_mail.osm_streets_graph_adapter import OsmStreetsGraphAdapter
-from src.city_mail.path_optimizer_service import PathOptimizerApplication
-from src.city_mail.visualization_utils import save_shortest_delivery_path_map
+from city_mail.delivery_optimizer.addresses_data_adapter import NominatimAddressesDataAdapter
+from city_mail.utils.file_path_utils import urlify
+from city_mail.navigation.graph_path_navigator import GraphPathNavigator
+from city_mail.delivery_optimizer.osm_streets_graph_adapter import OsmStreetsGraphAdapter
+from city_mail.delivery_optimizer.path_optimizer_service import PathOptimizerApplication
+from city_mail.utils.visualization_utils import save_shortest_delivery_path_map
 
+
+app = typer.Typer()
 
 def display_navigation(navigator: GraphPathNavigator, best_nodes: list[int], delivery_nodes: dict[int, str]) -> None:
     for street in navigator.navigate(best_nodes):
@@ -18,6 +20,7 @@ def display_navigation(navigator: GraphPathNavigator, best_nodes: list[int], del
         else:
             print(f":right_arrow: Follow {street.name} for {street.length:.0f} meters")
 
+@app.command()
 def main(city: str,
          addresses_file_path: Annotated[str, typer.Option(
              help="File containing a list of addresses for the chosen city"
@@ -47,5 +50,3 @@ def main(city: str,
                                     starting_node,
                                     delivery_nodes.keys(), f"{best_route_folder}/{urlify(city)}.png")
 
-if __name__ == "__main__":
-    typer.run(main)

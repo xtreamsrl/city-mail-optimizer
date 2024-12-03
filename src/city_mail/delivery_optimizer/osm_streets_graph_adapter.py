@@ -1,12 +1,11 @@
 import logging
 import os
-import re
 
 import networkx as nx
 import osmnx as ox
 
-from src.city_mail.addresses_data_adapter import AddressData
-from src.city_mail.file_path_utils import urlify
+from city_mail.delivery_optimizer.addresses_data_adapter import AddressData
+from city_mail.utils.file_path_utils import urlify
 
 
 class StreetsGraphPort:

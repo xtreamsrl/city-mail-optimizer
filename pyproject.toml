@@ -13,3 +13,10 @@ dependencies = [
     "scikit-learn>=1.5.1",
     "typer>=0.14.0",
 ]
+
+[project.scripts]
+city-mail-optimizer = "city_mail.cli.optimize_path:app"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

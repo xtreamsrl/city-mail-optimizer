@@ -16,8 +16,13 @@ If you want to install and run the project, follow the steps below:
     ```
 4. Now you are ready to run the main script; with `uv`, the command is:
     ```bash
-    uv run main.py
+    uv run city-mail-optimizer "<city-name>, <city-province>" --addresses-file-path "<addresses-file-path>"
     ```
+   where `<city-name>` is the name of the city you want to optimize the mail delivery for, `<city-province>` is the 
+   province of the city, and `<addresses-file-path>` is the path to the file containing the addresses to be optimized.
+   Note that, the `<addresses-file-path>` should be a file where every line is an address in the format 
+   `"<address>, <city>, <province>"`.
+   
 
 ## How to Contribute
 If you want to contribute to the project, keep in mind the following developer guidelines:

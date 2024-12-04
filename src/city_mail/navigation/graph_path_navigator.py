@@ -7,8 +7,7 @@ from pydantic import BaseModel
 class NavigationStreet(BaseModel):
     name: str
     length: float
-    starting_node_id: int
-    ending_node_id: int
+    node_ids: list[int]
 
 
 class GraphPathNavigator:
@@ -16,40 +15,54 @@ class GraphPathNavigator:
         self._graph = graph
 
     def navigate(self, path: list[int]) -> Generator[NavigationStreet, None, None]:
-        current_name = None
-        current_length = 0.0
-        starting_node_id = path[0]
+        # initialize the first street
+        current_street_name = None
+        current_street_length = 0.0
+        current_street_node_ids = [path[0]]
 
+        # iterate over edges in the path
         for i in range(len(path) - 1):
+            # extract the nodes
             current_node = path[i]
             next_node = path[i + 1]
-            edge_data = self._graph.get_edge_data(current_node, next_node)[0]
-            edge_name = edge_data.get("name", edge_data.get("ref", "Unknown"))
-            edge_length = edge_data["length"]
+            try:
+                current_edge_data = self._graph.get_edge_data(current_node, next_node)[
+                    0
+                ]
+            except TypeError:
+                print("")
+            current_edge_name = current_edge_data.get(
+                "name", current_edge_data.get("ref", "Unknown")
+            )
+            current_edge_length = current_edge_data["length"]
 
-            # TODO: some edge contains multiple street names, understand better why this case happen in the graph edges
-            if isinstance(edge_name, list):
-                edge_name = edge_name[0]
+            if isinstance(current_edge_name, list):
+                # TODO: some edge contains multiple street names, understand better why this happen
+                current_edge_name = current_edge_name[0]
 
-            if current_name is None:
-                current_name = edge_name
+            if current_street_name is None:
+                # first street
+                current_street_name = current_edge_name
 
-            if edge_name == current_name:
-                current_length += edge_length
+            if current_edge_name == current_street_name:
+                # still on the same street: update the length and add the node
+                current_street_length += current_edge_length
+                current_street_node_ids.append(next_node)
             else:
+                # in a new street: yield the current one and start a new one
                 yield NavigationStreet(
-                    name=current_name,
-                    length=current_length,
-                    starting_node_id=starting_node_id,
-                    ending_node_id=current_node,
+                    name=current_street_name,
+                    length=current_street_length,
+                    node_ids=current_street_node_ids,
                 )
-                current_name = edge_name
-                current_length = 0
-                starting_node_id = next_node
+                # reset street attributes
+                current_street_name = current_edge_name
+                current_street_length = 0
+                current_street_node_ids = [next_node]
 
+        # yield the last street
         yield NavigationStreet(
-            name=current_name,
-            length=current_length,
-            starting_node_id=starting_node_id,
-            ending_node_id=path[-1],
+            name=current_street_name,
+            length=current_street_length,
+            node_ids=current_street_node_ids,
         )

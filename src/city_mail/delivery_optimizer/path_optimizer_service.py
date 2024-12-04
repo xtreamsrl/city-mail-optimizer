@@ -37,6 +37,7 @@ class PathOptimizerApplication(PathOptimizerPort):
             for address_data in delivery_addresses_data
         ]
 
+        # TODO: we should handle the case when two addresses have the same node id since dict can't have duplicate keys
         delivery_nodes_map = dict(zip(delivery_nodes, addresses))
 
         starting_node = delivery_nodes[0]
@@ -54,7 +55,7 @@ class PathOptimizerApplication(PathOptimizerPort):
             seed=1,
         )
 
-        logging.info(f"Reordering best route")
+        logging.info("Reordering best route")
         best_route = self._reorder_route(best_route, starting_node)
 
         return best_route, delivery_nodes_map, starting_node

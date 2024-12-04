@@ -20,23 +20,26 @@ app = typer.Typer()
 
 def display_navigation(
     navigator: GraphPathNavigator,
-    best_nodes: list[int],
-    starting_node: int,
-    delivery_nodes: dict[int, str],
+    path: list[int],
+    delivery_nodes_dict: dict[int, str],
 ) -> None:
-    for street in navigator.navigate(best_nodes):
-        if street.starting_node_id == starting_node:
-            print(
-                f":house: [green]Start from[/green] [italic]{delivery_nodes[street.starting_node_id]}[/italic]"
-            )
-            del delivery_nodes[street.starting_node_id]
-        elif street.starting_node_id in delivery_nodes.keys():
-            print(
-                f":package: [green]Deliver to[/green] [italic]{delivery_nodes[street.starting_node_id]}[/italic]"
-            )
-            del delivery_nodes[street.starting_node_id]
+    _path = path.copy()
+    _delivery_nodes_dict = delivery_nodes_dict.copy()
+    starting_address = _delivery_nodes_dict.pop(_path.pop(0))
+
+    print(f":house: [green]Start from[/green] [italic]{starting_address}[/italic]")
+    for street in navigator.navigate(_path):
+        delivery_nodes_in_street = [
+            node for node in _delivery_nodes_dict.keys() if node in street.node_ids
+        ]
+        if delivery_nodes_in_street:
+            for delivery_node in delivery_nodes_in_street:
+                print(
+                    f":package: [green]Deliver to[/green] [italic]{_delivery_nodes_dict.pop(delivery_node)}[/italic]"
+                )
         else:
             print(f":right_arrow: Follow {street.name} for {street.length:.0f} meters")
+    print(":house: [green]Navigation complete.[/green]")
 
 
 @app.command()
@@ -70,7 +73,6 @@ def main(
     display_navigation(
         GraphPathNavigator(osm_street_graph.city_graph),
         best_route,
-        starting_node,
         delivery_nodes,
     )
 
@@ -81,7 +83,3 @@ def main(
         delivery_nodes.keys(),
         f"{best_route_folder}/{urlify(city)}.png",
     )
-
-
-if __name__ == "__main__":
-    main("Pavia, Pavia, Italia", "../../addresses.txt", "shortest_delivery_maps")

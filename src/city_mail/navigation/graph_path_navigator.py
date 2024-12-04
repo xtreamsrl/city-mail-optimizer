@@ -10,6 +10,7 @@ class NavigationStreet(BaseModel):
     starting_node_id: int
     ending_node_id: int
 
+
 class GraphPathNavigator:
     def __init__(self, graph: nx.Graph):
         self._graph = graph
@@ -20,8 +21,10 @@ class GraphPathNavigator:
         starting_node_id = path[0]
 
         for i in range(len(path) - 1):
-            edge_data = self._graph.get_edge_data(path[i], path[i + 1])[0]
-            edge_name = edge_data["name"]
+            current_node = path[i]
+            next_node = path[i + 1]
+            edge_data = self._graph.get_edge_data(current_node, next_node)[0]
+            edge_name = edge_data.get("name", edge_data.get("ref", "Unknown"))
             edge_length = edge_data["length"]
 
             # TODO: some edge contains multiple street names, understand better why this case happen in the graph edges
@@ -38,15 +41,15 @@ class GraphPathNavigator:
                     name=current_name,
                     length=current_length,
                     starting_node_id=starting_node_id,
-                    ending_node_id=path[i]
+                    ending_node_id=current_node,
                 )
                 current_name = edge_name
                 current_length = 0
-                starting_node_id = path[i+1]
+                starting_node_id = next_node
 
         yield NavigationStreet(
             name=current_name,
             length=current_length,
             starting_node_id=starting_node_id,
-            ending_node_id=path[-1]
+            ending_node_id=path[-1],
         )

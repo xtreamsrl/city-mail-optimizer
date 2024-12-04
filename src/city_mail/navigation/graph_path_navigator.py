@@ -25,12 +25,7 @@ class GraphPathNavigator:
             # extract the nodes
             current_node = path[i]
             next_node = path[i + 1]
-            try:
-                current_edge_data = self._graph.get_edge_data(current_node, next_node)[
-                    0
-                ]
-            except TypeError:
-                print("")
+            current_edge_data = self._graph.get_edge_data(current_node, next_node)[0]
             current_edge_name = current_edge_data.get(
                 "name", current_edge_data.get("ref", "Unknown")
             )

@@ -32,8 +32,8 @@ class GraphPathNavigator:
             current_edge_length = current_edge_data["length"]
 
             if isinstance(current_edge_name, list):
-                # TODO: some edge contains multiple street names, understand better why this happen
-                current_edge_name = current_edge_name[0]
+                # the edge may span multiple street names; in this case we keep the last one to start a new street
+                current_edge_name = current_edge_name[-1]
 
             if current_street_name is None:
                 # first street

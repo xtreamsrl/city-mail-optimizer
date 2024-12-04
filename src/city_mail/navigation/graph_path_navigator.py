@@ -52,7 +52,7 @@ class GraphPathNavigator:
                 )
                 # reset street attributes
                 current_street_name = current_edge_name
-                current_street_length = 0
+                current_street_length = current_edge_length
                 current_street_node_ids = [next_node]
 
         # yield the last street

@@ -55,8 +55,9 @@ class PathOptimizerApplication(PathOptimizerPort):
             seed=1,
         )
 
-        logging.info("Reordering best route")
-        best_route = self._reorder_route(best_route, starting_node)
+        if starting_node != best_route[0]:
+            logging.info("Reordering best route")
+            best_route = self._reorder_route(best_route, starting_node)
 
         return best_route, delivery_nodes_map, starting_node
 

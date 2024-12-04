@@ -55,15 +55,4 @@ class PathOptimizerApplication(PathOptimizerPort):
             seed=1,
         )
 
-        if starting_node != best_route[0]:
-            logging.info("Reordering best route")
-            best_route = self._reorder_route(best_route, starting_node)
-
         return best_route, delivery_nodes_map, starting_node
-
-    def _reorder_route(self, route: list[int], starting_node: int) -> list[int]:
-        return (
-            route[route.index(starting_node) : -1]
-            + route[: route.index(starting_node)]
-            + [starting_node]
-        )

@@ -14,15 +14,30 @@ If you want to install and run the project, follow the steps below:
     ```bash
     uv init
     ```
-4. Now you are ready to run the main script; with `uv`, the command is:
-    ```bash
-    uv run city-mail-optimizer "<city-name>, <city-province>" --addresses-file-path "<addresses-file-path>"
-    ```
-   where `<city-name>` is the name of the city you want to optimize the mail delivery for, `<city-province>` is the 
-   province of the city, and `<addresses-file-path>` is the path to the file containing the addresses to be optimized.
-   Note that, the `<addresses-file-path>` should be a file where every line is an address in the format 
-   `"<address>, <city>, <province>"`.
-   
+4. Now you are ready to run the project using a [streamlit dashboard](#streamlit-dashboard) 
+or a [command line interface](#command-line-interface) (useful for debugging).
+
+### Streamlit Dashboard
+To run the streamlit dashboard, use the following command:
+ ```bash
+uv run streamlit run src/city_mail/dashboard/app.py
+ ```
+This will open a new tab in your browser with the dashboard. 
+The dashboard should be intuitive, you can insert a city name and load a file with addresses to optimize the mail delivery.
+
+### Command Line Interface
+Now you are ready to run the main script; with `uv`, the command is:
+ ```bash
+ uv run city-mail-optimizer "<city-name>, <city-province>" \
+--addresses-file-path "<addresses-file-path>"
+ ```
+where `<city-name>` is the name of the city you want to optimize the mail delivery for, `<city-province>` is the 
+province of the city, and `<addresses-file-path>` is the path to the file containing the addresses to be optimized.
+Note that, the `<addresses-file-path>` should be a file where every line is an address in the format 
+`"<address>, <city>, <province>"`.
+
+
+
 
 ## How to Contribute
 If you want to contribute to the project, keep in mind the following developer guidelines:

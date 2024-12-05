@@ -1,3 +1,5 @@
+from typing import Iterable
+
 import networkx as nx
 import osmnx as ox
 
@@ -6,7 +8,7 @@ def save_shortest_delivery_path_map(
     graph: nx.Graph,
     best_path: list[int],
     starting_node: int,
-    delivery_nodes: list[int],
+    delivery_nodes: Iterable[int],
     saving_filepath: str,
 ) -> None:
     # TODO: add docstring

@@ -6,21 +6,21 @@ from networkx.algorithms.approximation.traveling_salesman import (
     traveling_salesman_problem,
 )
 
-from city_mail.delivery_optimizer.addresses_data_adapter import AddressesDataPort
-from city_mail.delivery_optimizer.osm_streets_graph_adapter import StreetsGraphPort
+from city_mail.delivery_optimizer.addresses_data_adapter import AbstractAddressesData
+from city_mail.delivery_optimizer.osm_streets_graph_adapter import AbstractStreetsGraph
 
 
-class PathOptimizerPort(Protocol):
+class AbstractPathOptimizer(Protocol):
     def calculate_shortest_path(
         self, addresses: list[str]
     ) -> tuple[list[int], dict[str, int], int]: ...
 
 
-class PathOptimizerApplication(PathOptimizerPort):
+class PathOptimizer(AbstractPathOptimizer):
     def __init__(
         self,
-        streets_graph_adapter: StreetsGraphPort,
-        address_data_adapter: AddressesDataPort,
+        streets_graph_adapter: AbstractStreetsGraph,
+        address_data_adapter: AbstractAddressesData,
     ):
         self.streets_graph_adapter = streets_graph_adapter
         self.address_data_adapter = address_data_adapter

@@ -8,7 +8,7 @@ from city_mail.delivery_optimizer.addresses_data_adapter import AddressData
 from city_mail.utils.file_path_utils import urlify
 
 
-class StreetsGraphPort:
+class AbstractStreetsGraph:
     def get_city_graph(self) -> dict:
         pass
 
@@ -22,7 +22,7 @@ class StreetsGraphPort:
         pass
 
 
-class OsmStreetsGraphAdapter(StreetsGraphPort):
+class OsmStreetsGraphDownloader(AbstractStreetsGraph):
     def __init__(self, city: str):
         self._city_name = city
         self._file_path = self._build_file_path_from_city_name(self._city_name)

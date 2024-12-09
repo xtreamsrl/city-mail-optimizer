@@ -5,12 +5,12 @@ import leafmap.foliumap as leafmap
 import osmnx as ox
 
 from city_mail.delivery_optimizer.addresses_data_adapter import (
-    NominatimAddressesDataAdapter,
+    NominatimAddressesDataDownloader,
 )
 from city_mail.delivery_optimizer.osm_streets_graph_adapter import (
-    OsmStreetsGraphAdapter,
+    OsmStreetsGraphDownloader,
 )
-from city_mail.delivery_optimizer.path_optimizer_service import PathOptimizerApplication
+from city_mail.delivery_optimizer.path_optimizer_service import PathOptimizer
 from city_mail.navigation.graph_path_navigator import GraphPathNavigator
 
 st.set_page_config(layout="wide")
@@ -69,7 +69,7 @@ def display_navigation() -> None:
 
 
 def display_delivery_markers(
-    delivery_nodes: list[str], address_adapter: NominatimAddressesDataAdapter
+    delivery_nodes: list[str], address_adapter: NominatimAddressesDataDownloader
 ):
     for addr in delivery_nodes:
         location = address_adapter.get_address_data(addr)
@@ -85,12 +85,12 @@ m = leafmap.Map()
 m.add_basemap("OpenStreetMap")
 
 if city_name:
-    address_adapter = NominatimAddressesDataAdapter()
-    osm_street_graph = OsmStreetsGraphAdapter(city_name)
+    address_adapter = NominatimAddressesDataDownloader()
+    osm_street_graph = OsmStreetsGraphDownloader(city_name)
 
     st.session_state["city_graph"] = osm_street_graph.city_graph
 
-    path_optimizer = PathOptimizerApplication(
+    path_optimizer = PathOptimizer(
         streets_graph_adapter=osm_street_graph, address_data_adapter=address_adapter
     )
 

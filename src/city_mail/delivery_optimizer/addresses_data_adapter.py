@@ -10,7 +10,7 @@ class AddressData(BaseModel):
     longitude: float
 
 
-class AddressesDataPort(Protocol):
+class AbstractAddressesData(Protocol):
     def get_multiple_addresses_data(self, addresses: list[str]) -> list[AddressData]:
         pass
 
@@ -18,7 +18,7 @@ class AddressesDataPort(Protocol):
         pass
 
 
-class NominatimAddressesDataAdapter(AddressesDataPort):
+class NominatimAddressesDataDownloader(AbstractAddressesData):
     def get_multiple_addresses_data(self, addresses: list[str]) -> list[AddressData]:
         return [self.get_address_data(address) for address in addresses]
 
@@ -26,7 +26,7 @@ class NominatimAddressesDataAdapter(AddressesDataPort):
         params = {"q": address, "format": "json"}
 
         response = httpx.get(
-            f"https://nominatim.openstreetmap.org/search", params=params
+            "https://nominatim.openstreetmap.org/search", params=params
         )
         response.raise_for_status()
 

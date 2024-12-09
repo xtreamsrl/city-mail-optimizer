@@ -4,14 +4,14 @@ import typer
 from rich import print
 
 from city_mail.delivery_optimizer.addresses_data_adapter import (
-    NominatimAddressesDataAdapter,
+    NominatimAddressesDataDownloader,
 )
 from city_mail.utils.file_path_utils import urlify
 from city_mail.navigation.graph_path_navigator import GraphPathNavigator
 from city_mail.delivery_optimizer.osm_streets_graph_adapter import (
-    OsmStreetsGraphAdapter,
+    OsmStreetsGraphDownloader,
 )
-from city_mail.delivery_optimizer.path_optimizer_service import PathOptimizerApplication
+from city_mail.delivery_optimizer.path_optimizer_service import PathOptimizer
 from city_mail.utils.visualization_utils import save_shortest_delivery_path_map
 
 
@@ -55,10 +55,10 @@ def main(
         typer.Option(help="Folder where save the maps with the optimized street path"),
     ] = "shortest_delivery_maps",
 ) -> None:
-    osm_street_graph = OsmStreetsGraphAdapter(city)
-    path_optimizer = PathOptimizerApplication(
+    osm_street_graph = OsmStreetsGraphDownloader(city)
+    path_optimizer = PathOptimizer(
         streets_graph_adapter=osm_street_graph,
-        address_data_adapter=NominatimAddressesDataAdapter(),
+        address_data_adapter=NominatimAddressesDataDownloader(),
     )
 
     with open(addresses_file_path) as f:

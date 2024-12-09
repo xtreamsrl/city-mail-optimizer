@@ -87,4 +87,4 @@ def main(
 
 
 if __name__ == "__main__":
-    main("Pavia, Pavia, Italia", "../../../addresses.txt", "shortest_delivery_maps")
+    app()
